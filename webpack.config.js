@@ -3,13 +3,16 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const getStyleLoaders = () => {
-	if (process.env.NODE_ENV === 'development') {
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const getStyleLoaders = (setModule) => {
+	if (isDevelopment) {
 		return [
 			'style-loader',
 			{
 				loader: 'css-loader',
 				options: {
+					modules: setModule,
 					sourceMap: true,
 				},
 			},
@@ -23,7 +26,12 @@ const getStyleLoaders = () => {
 	} else {
 		return [
 			MiniCssExtractPlugin.loader,
-			'css-loader',
+			{
+				loader: 'css-loader',
+				options: {
+					modules: setModule,
+				},
+			},
 			'postcss-loader',
 			'sass-loader',
 		];
@@ -46,7 +54,12 @@ module.exports = {
 				use: 'babel-loader',
 			},
 			{
-				test: /\.s?css$/,
+				test: /\.module.(sa|sc|c)ss$/,
+				use: getStyleLoaders(true),
+			},
+			{
+				test: /\.(sa|sc|c)ss$/,
+				exclude: /\.module.(sa|sc|c)ss$/,
 				use: getStyleLoaders(),
 			},
 			{
@@ -62,6 +75,9 @@ module.exports = {
 			},
 		],
 	},
+	resolve: {
+		extensions: ['.js', '.jsx', '.scss'],
+	},
 	mode: process.env.NODE_ENV,
 	devServer: {
 		historyApiFallback: true,
@@ -71,8 +87,8 @@ module.exports = {
 			template: 'client/public/index.html',
 		}),
 		new MiniCssExtractPlugin({
-			filename: '[name].css',
-			chunkFilename: '[id].css',
+			filename: isDevelopment ? '[name].css' : '[name].[hash].css',
+			chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css',
 		}),
 	],
 };
