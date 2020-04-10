@@ -9,8 +9,8 @@ module.exports = {
 	map: true,
 	plugins: [
 		require('tailwindcss'),
-		...(isProduction ? [require('autoprefixer')] : []),
-		require('cssnano'),
-		...(isProduction ? [purgecss] : []),
+		...(isProduction
+			? [require('autoprefixer'), require('cssnano'), purgecss]
+			: []),
 	],
 };
