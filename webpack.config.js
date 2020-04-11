@@ -58,18 +58,25 @@ module.exports = {
 				use: {
 					loader: 'eslint-loader',
 					options: {
+						baseConfig: {
+							extends: [
+								'eslint:recommended',
+								'plugin:react/recommended',
+							],
+						},
 						plugins: ['react-hooks'],
 						rules: {
 							'react-hooks/rules-of-hooks': 'error',
 							'react-hooks/exhaustive-deps': 'warn',
+							'no-unused-vars': 'warn',
 						},
+						envs: ['browser', 'node'],
 						parserOptions: {
-							ecmaVersion: 6,
+							ecmaVersion: 2018,
 							sourceType: 'module',
 							ecmaFeatures: {
 								jsx: true,
 								modules: true,
-								experimentalObjectRestSpread: true,
 							},
 						},
 					},
