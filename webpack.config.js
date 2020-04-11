@@ -49,7 +49,7 @@ module.exports = {
 			{
 				test: /\.m?js$/,
 				exclude: /(node_modules|bower_components)/,
-				use: 'babel-loader',
+				use: ['react-hot-loader/webpack', 'babel-loader'],
 			},
 			{
 				enforce: 'pre',
@@ -73,7 +73,6 @@ module.exports = {
 						rules: {
 							'react-hooks/rules-of-hooks': 'error',
 							'react-hooks/exhaustive-deps': 'warn',
-							'no-unused-vars': 'warn',
 						},
 						envs: ['browser', 'node'],
 						parserOptions: {
@@ -111,11 +110,15 @@ module.exports = {
 	},
 	resolve: {
 		extensions: ['.js', '.jsx', '.scss'],
+		alias: {
+			'react-dom': '@hot-loader/react-dom',
+		},
 	},
 	mode: process.env.NODE_ENV,
 	devServer: {
 		historyApiFallback: true,
 		hot: true,
+		contentBase: path.resolve(__dirname, 'client/build'),
 	},
 	devtool: isDevelopment ? 'cheap-module-source-map' : false,
 	plugins: [
